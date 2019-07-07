@@ -1,7 +1,9 @@
 const path = require('path')
+const http = require('http')
 const express = require('express')
 const hbs = require('hbs')
 const app = express()
+const server = http.createServer(app)
 app.use(express.json())
 
 // Define path for Express Config
@@ -24,4 +26,4 @@ app.get('', (req, res) => {
 
 
 
-module.exports = app
+module.exports = server
