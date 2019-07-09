@@ -16,7 +16,12 @@ socket.on('broadcast', (message) => {
 //Course Way
 document.querySelector('#messageForm').addEventListener('submit', (e) => {
     e.preventDefault()
-    socket.emit('SendMessage', e.target.elements.message.value, ()=> {
+    if (e.target.elements.message.value.trim() === '') return
+
+    socket.emit('SendMessage', e.target.elements.message.value, (error)=> {
+        if (error){
+           return console.log('%c' + error, css)
+        }
         console.log('the message was delivered')
     })
     document.querySelector('#MSG').value = ""
