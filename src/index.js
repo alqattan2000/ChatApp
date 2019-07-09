@@ -15,15 +15,16 @@ io.on('connection',(socket)=> {
     //     //socket.emit('countUpdated', count)
     //     io.emit('countUpdated',count)
     // })
-    socket.on('sendLocation',({latitude,longitude})=>{
-            io.emit('message', `https://google.com/maps?q=${latitude},${longitude}`)
+    socket.on('sendLocation',({latitude,longitude},callback)=>{
+            socket.broadcast.emit('message', `https://google.com/maps?q=${latitude},${longitude}`)
+            callback('Location Shared !!!')
     })
     socket.on('SendMessage', (message, callback)=>{
         const filter = new Filter()
         if (filter.isProfane(message)){
             return callback('عيب يا قليل الأدب')
         }
-        console.log(message)
+        //console.log(message)
         io.emit('broadcast',message)
         callback()
     })
