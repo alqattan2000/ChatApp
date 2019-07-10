@@ -2,7 +2,7 @@ var css = "text-shadow: -1px -1px hsl(0,100%,50%), 1px 1px hsl(5.4, 100%, 50%), 
 const socket = io()
 
 // Elements
-const $messageForm = document.querySelector('#message-form')
+const $messageForm = document.querySelector('#messageForm')
 const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
 const $locationButton = document.querySelector('#sendLocation')
@@ -11,23 +11,19 @@ const $messages = document.querySelector('#messages')
 // Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const urlMessage = document.querySelector('#urlMessage').innerHTML
-
 socket.on('message', (message) => {
+    console.log(message)
+    let html
+    if (message.toUpperCase().startsWith('HTTP')) {
+         html = Mustache.render(urlMessage,{message})
+    }else {
+         html = Mustache.render(messageTemplate,{message})
+    }
     
-    const html = Mustache.render(messageTemplate,timeFormat(message))
-    // { text : message.text,
-    // createdAt: moment(message.createdAt).format('h:mm:ss A')})
     $messages.insertAdjacentHTML('beforeend', html)
-    
+  
 })  
-socket.on('url', (url)=>{
-    console.log(url)
-    const html = Mustache.render(urlMessage,timeFormat(url))
-        // {text:url.text,
-        // createdAt: 
-        // })
-    $messages.insertAdjacentHTML('beforeend', html)
-})
+
 // socket.on('broadcast', (message) => {
 //     console.log(message)//'background: #222; color: #bada55')
    
@@ -46,9 +42,7 @@ $messageForm.addEventListener('submit', (e) => {
         
        
         if (error){
-           const html = Mustache.render(messageTemplate,timeFormat( error))
-           $messages.insertAdjacentHTML('beforeend', html)
-           return
+           return console.log('%c' + error, css)
         }
         console.log('the message was delivered')
     })
@@ -76,7 +70,3 @@ $locationButton.addEventListener('click', async (e) => {
 //         e.preventDefault()
 //         socket.emit('SendMessage',document.querySelector('#MSG').value)
 //     })
-    const timeFormat= (obj)=>{
-        obj.createdAt = moment(obj.createdAt).format('h:mm:ss A')
-        return obj
-    }
