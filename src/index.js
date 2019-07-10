@@ -3,12 +3,12 @@ const socketIO = require('socket.io')
 const port = process.env.PORT
 const Filter= require('bad-words')
 const { generateMessage } = require('./utils/messages')
-const os = require('os')
+
 const io = socketIO(server)
 let count = 0
 io.on('connection',(socket)=> {
-
-    socket.emit('message', generateMessage(os.hostname()))
+    console.log(socket.handshake.headers.host.split(":").shift())
+    socket.emit('message', generateMessage(socket.handshake.headers.host.split(":").shift()))
     socket.broadcast.emit('message', generateMessage('A New User Has Join'))
     // console.log('New WebSocket Connection !!')
     // socket.emit('countUpdated',count)
