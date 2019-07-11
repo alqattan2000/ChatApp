@@ -12,6 +12,9 @@ const $messages = document.querySelector('#messages')
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const urlMessage = document.querySelector('#urlMessage').innerHTML
 
+// Options
+const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true })
+
 socket.on('message', (message) => {
     
     const html = Mustache.render(messageTemplate,timeFormat(message))
@@ -80,3 +83,10 @@ $locationButton.addEventListener('click', async (e) => {
         obj.createdAt = moment(obj.createdAt).format('h:mm:ss A')
         return obj
     }
+
+    socket.emit('join', {username, room},(error) => {
+        if (error){
+            alert(error)
+            location.href= '/'
+        }
+    })
