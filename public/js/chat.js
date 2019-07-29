@@ -39,6 +39,8 @@ const autoScroll = ()=>{
         $messages.scrollTop = $messages.scrollHeight
     }
 
+}
+
 socket.on('message', (message) => {
     
     const html = Mustache.render(messageTemplate,timeFormat(message))
@@ -123,4 +125,4 @@ $locationButton.addEventListener('click', async (e) => {
             alert(error)
             location.href= '/'
         }
-    })}
+    })
