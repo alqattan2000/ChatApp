@@ -123,4 +123,4 @@ $locationButton.addEventListener('click', async (e) => {
             alert(error)
             location.href= '/'
         }
-    })
+    })}
