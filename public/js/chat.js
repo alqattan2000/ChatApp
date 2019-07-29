@@ -11,9 +11,33 @@ const $messages = document.querySelector('#messages')
 // Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const urlMessage = document.querySelector('#urlMessage').innerHTML
+const sidebar = document.querySelector('#sidebar-template').innerHTML
+
 
 // Options
 const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true })
+
+const autoScroll = ()=>{
+    // new message element
+    const $newMessage = $messages.lastElementChild
+
+    //Height of the new message
+    const newMessageStyles = getComputedStyle($newMessage)
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
+
+    //Visible height
+    const VisibleHeight = $messages.offsetHeight
+
+    // Height of messages container
+    const containerHeight = $messages.scrollHeight
+
+    // how far have i scrolled 
+    const scrollOffset = $messages.scrollTop + VisibleHeight
+
+    if ((containerHeight - newMessageHeight) <= scrollOffset) {
+        $messages.scrollTop = $messages.scrollHeight
+    }
 
 socket.on('message', (message) => {
     
@@ -21,7 +45,7 @@ socket.on('message', (message) => {
     // { text : message.text,
     // createdAt: moment(message.createdAt).format('h:mm:ss A')})
     $messages.insertAdjacentHTML('beforeend', html)
-    
+    autoScroll()
 })  
 socket.on('url', (url)=>{
     console.log(url)
@@ -30,7 +54,9 @@ socket.on('url', (url)=>{
         // createdAt: 
         // })
     $messages.insertAdjacentHTML('beforeend', html)
+    autoScroll()
 })
+
 // socket.on('broadcast', (message) => {
 //     console.log(message)//'background: #222; color: #bada55')
    
@@ -41,6 +67,14 @@ socket.on('url', (url)=>{
 // })
 
 //Course Way
+socket.on('roomData', ({room, users})=>{
+const html = Mustache.render(sidebar, {
+    room,
+    users
+})  
+  document.querySelector('#sidebar').innerHTML = html
+})
+
 $messageForm.addEventListener('submit', (e) => {
     e.preventDefault()
     if ($messageFormInput.value.trim() === '') return
